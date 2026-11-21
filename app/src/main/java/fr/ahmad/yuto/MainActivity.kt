@@ -39,6 +39,13 @@ class MainActivity : AppCompatActivity() {
             Settings.setStrictLock(this, on)
             strictHint(on)
         }
+        val driving = findViewById<android.widget.CheckBox>(R.id.drivingBox)
+        driving.isChecked = Settings.allowDriving(this)
+        drivingHint(driving.isChecked)
+        driving.setOnCheckedChangeListener { _, on ->
+            Settings.setAllowDriving(this, on)
+            drivingHint(on)
+        }
         buildSteps(findViewById(R.id.steps))
     }
 
@@ -50,6 +57,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun strictHint(on: Boolean) {
         findViewById<TextView>(R.id.strictHint).setText(if (on) R.string.strict_on else R.string.strict_off)
+    }
+
+    private fun drivingHint(on: Boolean) {
+        findViewById<TextView>(R.id.drivingHint).setText(if (on) R.string.driving_on else R.string.driving_off)
     }
 
     /** Après "Terminé" : on montre clairement si le compte est connecté. */
@@ -77,6 +88,8 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             CAR_SPEED,
+            // Recherche vocale depuis l'écran de la voiture
+            Manifest.permission.RECORD_AUDIO,
         )
         if (Build.VERSION.SDK_INT >= 33) wanted += Manifest.permission.POST_NOTIFICATIONS
         val missing = wanted.filterNot { granted(it) }
