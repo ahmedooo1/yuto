@@ -49,7 +49,7 @@ class YutoSession : Session() {
 
 class VideoScreen(carContext: CarContext) : Screen(carContext) {
 
-    private val renderer = VideoRenderer(carContext)
+    private val renderer = VideoRenderer(carContext).also { r -> r.onModeChanged = { runCatching { invalidate() } } }
     private var state = ParkGuard.State.UNKNOWN
     private var carSpeedOk = false
 
@@ -155,7 +155,7 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
                 renderer.back()
             }.build())
             .addAction(Action.Builder().setIcon(icon(R.drawable.ic_home)).setOnClickListener {
-                renderer.home()
+                screenManager.push(MenuScreen(carContext, renderer))
             }.build())
             .addAction(Action.Builder().setIcon(icon(R.drawable.ic_play_pause))
                 .setOnClickListener { renderer.playPause() }.build())
@@ -165,12 +165,17 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
 
         // Boutons sur le côté : défilement de la page (glisser marche aussi en mode déplacement)
         val side = ActionStrip.Builder()
-        if (parked) {
+        val full = renderer.isFullscreen()
+        if (parked && !full) {
             side.addAction(Action.PAN)
             side.addAction(Action.Builder().setIcon(icon(R.drawable.ic_up)).setOnClickListener { renderer.scrollPage(-1) }.build())
             side.addAction(Action.Builder().setIcon(icon(R.drawable.ic_down)).setOnClickListener { renderer.scrollPage(+1) }.build())
+        } else {
+            side.addAction(Action.Builder().setIcon(icon(R.drawable.ic_replay10)).setOnClickListener { renderer.seek(-10) }.build())
         }
-        side.addAction(Action.Builder().setIcon(icon(R.drawable.ic_replay10)).setOnClickListener { renderer.seek(-10) }.build())
+        side.addAction(Action.Builder().setIcon(icon(R.drawable.ic_fullscreen)).setOnClickListener {
+            if (full && renderer.isLocalPlaying()) renderer.stopLocal() else renderer.setFullscreen(!full)
+        }.build())
         b.setMapActionStrip(side.build())
         if (parked) b.setPanModeListener { }
         return b.build()
