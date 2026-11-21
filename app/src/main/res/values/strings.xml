@@ -46,4 +46,23 @@
     <string name="login_connected">✓ Connected to your YouTube account</string>
     <string name="login_not_connected">Not connected</string>
     <string name="logout_button">Sign out</string>
+    <string name="menu_title">Yuto</string>
+    <string name="menu_home">YouTube home</string>
+    <string name="menu_fullscreen_on">Fullscreen</string>
+    <string name="menu_fullscreen_off">Exit fullscreen</string>
+    <string name="menu_night_on">Night mode on</string>
+    <string name="menu_night_off">Night mode off</string>
+    <string name="menu_local">Phone videos (%1$d)</string>
+    <string name="menu_local_none">No phone videos yet. Add some in the Yuto app on the phone.</string>
+    <string name="menu_videos_title">Phone videos</string>
+    <string name="resume_at">Resume at %1$d:%2$02d</string>
+    <string name="menu_local_stop">Stop the phone video</string>
+    <string name="local_title">Videos from the phone</string>
+    <string name="local_text">Pick videos stored on the phone, then open the menu in the car (house button). They play in order and resume where you stopped.</string>
+    <string name="local_pick">Add videos</string>
+    <string name="local_clear">Empty the list</string>
+    <string name="local_none">No video added</string>
+    <string name="local_count">%1$d video(s) in the list</string>
+    <string name="night_label">Night mode</string>
+    <string name="night_hint">Dims the picture and asks pages for a dark theme. Can also be switched in the car menu.</string>
 </resources>
