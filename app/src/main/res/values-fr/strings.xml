@@ -12,7 +12,7 @@
     <string name="login_button">Se connecter à YouTube</string>
     <string name="login_done">Terminé</string>
 
-    <string name="car_title">Dans la Golf</string>
+    <string name="car_title">Dans la voiture</string>
     <string name="car_step1">Réglages Android Auto : touche 10 fois la version, puis le menu ⋮ et Sources inconnues.</string>
     <string name="car_step2">Branche le téléphone et ouvre Yuto dans la liste des applis de la voiture.</string>
     <string name="car_step3">Arrête la voiture : après 10 secondes à l\'arrêt, la vidéo apparaît. Dès qu\'elle bouge, l\'image se cache et seul le son continue.</string>
@@ -34,6 +34,14 @@
     <string name="strict_label">Verrou strict (recommandé)</string>
     <string name="strict_on">La vidéo reste cachée tant que l\'arrêt n\'est pas confirmé (10 s à l\'arrêt).</string>
     <string name="strict_off">Mode souple : la vidéo apparaît après 2 s à l\'arrêt, même si la vitesse est illisible. Elle se cache dès qu\'un mouvement est mesuré.</string>
+    <string name="driving_label">Autoriser la vidéo en roulant</string>
+    <string name="driving_off">Désactivé : l\'image se cache dès que la voiture bouge. Recommandé.</string>
+    <string name="driving_on">⚠️ Activé : la vidéo reste visible pendant que tu conduis. Regarder l\'écran en conduisant est dangereux et interdit dans la plupart des pays. Ton choix, ta responsabilité.</string>
+    <string name="voice_listening">J\'écoute… dis ta recherche</string>
+    <string name="voice_unavailable">La reconnaissance vocale n\'est pas disponible sur ce téléphone.</string>
+    <string name="voice_no_permission">Autorise le micro sur le téléphone (dans Yuto) pour chercher à la voix.</string>
+    <string name="voice_error">La recherche vocale n\'a pas marché. Réessaie.</string>
+    <string name="voice_result">Recherche : %1$s</string>
     <string name="login_connected">✓ Connecté à ton compte YouTube</string>
     <string name="login_not_connected">Non connecté</string>
     <string name="logout_button">Se déconnecter</string>
