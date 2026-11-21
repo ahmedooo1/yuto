@@ -21,7 +21,15 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.VideoView
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
+import fr.ahmad.yuto.AdBlock
+import fr.ahmad.yuto.LocalVideo
+import fr.ahmad.yuto.Settings
 import androidx.car.app.SurfaceCallback
 import androidx.car.app.SurfaceContainer
 import fr.ahmad.yuto.AdBlock
@@ -51,6 +59,16 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     private var lock: LockView? = null
     private var fullView: View? = null
     private var fullCallback: WebChromeClient.CustomViewCallback? = null
+    private var localBox: FrameLayout? = null
+    private var localView: VideoView? = null
+    private var localBar: View? = null
+    private var queueIndex = -1
+    private var dim: View? = null
+    private var density = 1f
+    private var immersive = false
+
+    /** Appelé quand le plein écran ou la lecture locale change (la voiture met ses boutons à jour). */
+    var onModeChanged: (() -> Unit)? = null
 
     private var width = 0
     private var height = 0
@@ -124,6 +142,8 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     // ---------------- Commandes de l'écran ----------------
 
     fun load(url: String) {
+        stopLocal()
+        setFullscreen(false)
         exitFullscreen()
         web?.loadUrl(url)
     }
@@ -136,6 +156,14 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
 
     /** Retour : sort du plein écran, sinon page précédente. */
     fun back(): Boolean {
+        if (localView != null) {
+            stopLocal()
+            return true
+        }
+        if (immersive) {
+            setFullscreen(false)
+            return true
+        }
         if (fullView != null) {
             exitFullscreen()
             return true
@@ -148,8 +176,166 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         return false
     }
 
-    fun playPause() = web?.evaluateJavascript(Web.JS_PLAY_PAUSE, null)
-    fun seek(seconds: Int) = web?.evaluateJavascript(Web.jsSeek(seconds), null)
+    fun playPause() {
+        val lv = localView
+        if (lv != null) {
+            if (lv.isPlaying) {
+                lv.pause()
+                saveLocalPosition()
+            } else lv.start()
+        } else web?.evaluateJavascript(Web.JS_PLAY_PAUSE, null)
+    }
+
+    fun seek(seconds: Int) {
+        val lv = localView
+        if (lv != null) {
+            lv.seekTo((lv.currentPosition + seconds * 1000).coerceIn(0, lv.duration.coerceAtLeast(0)))
+        } else web?.evaluateJavascript(Web.jsSeek(seconds), null)
+    }
+
+    // ---------------- Mode nuit ----------------
+
+    /** Image assombrie + thème sombre des pages (réglage du téléphone ou menu de la voiture). */
+    fun applyNight() {
+        val on = Settings.night(context)
+        dim?.visibility = if (on) View.VISIBLE else View.GONE
+        web?.let { w ->
+            runCatching {
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+                    WebSettingsCompat.setAlgorithmicDarkeningAllowed(w.settings, on)
+                }
+            }
+        }
+    }
+
+    // ---------------- Plein écran ----------------
+
+    fun isFullscreen() = immersive || fullView != null || localView != null
+
+    /**
+     * Plein écran : la page passe sous les boutons de la voiture (marges à zéro) et
+     * la vidéo est agrandie sur toute la surface.
+     */
+    fun setFullscreen(on: Boolean) {
+        if (immersive == on) return
+        immersive = on
+        web?.evaluateJavascript(if (on) JS_FILL_ON else JS_FILL_OFF, null)
+        applyPadding()
+        onModeChanged?.invoke()
+    }
+
+    // ---------------- Vidéos du téléphone ----------------
+
+    fun isLocalPlaying() = localView != null
+
+    private val saver = object : Runnable {
+        override fun run() {
+            saveLocalPosition()
+            main.postDelayed(this, 5000)
+        }
+    }
+
+    private fun saveLocalPosition() {
+        val lv = localView ?: return
+        val item = LocalVideo.list(context).getOrNull(queueIndex) ?: return
+        LocalVideo.savePosition(context, item.uri, lv.currentPosition)
+    }
+
+    /** Lit la vidéo n° [index] de la file, là où elle s'était arrêtée ; enchaîne ensuite avec la suivante. */
+    fun playLocal(index: Int) {
+        val st = stage ?: return
+        val items = LocalVideo.list(context)
+        val item = items.getOrNull(index) ?: return
+        stopLocal()
+        web?.evaluateJavascript(Web.JS_PAUSE, null)
+        queueIndex = index
+        val c = st.context
+        val lv = VideoView(c)
+        val resume = LocalVideo.position(context, item.uri)
+        lv.setOnPreparedListener { mp ->
+            if (resume in 5000 until (mp.duration - 5000)) lv.seekTo(resume)
+            lv.start()
+        }
+        lv.setOnCompletionListener {
+            LocalVideo.savePosition(context, item.uri, 0)
+            if (index + 1 < items.size) playLocal(index + 1) else stopLocal()
+        }
+        lv.setOnErrorListener { _, _, _ ->
+            lastError = "video"
+            stopLocal()
+            true
+        }
+        val box = FrameLayout(c).apply { setBackgroundColor(Color.BLACK) }
+        box.addView(lv, FrameLayout.LayoutParams(MATCH, MATCH))
+        val bar = LinearLayout(c).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setBackgroundColor(0xCC000000.toInt())
+            val h = (96 * density).toInt()
+            fun btn(label: String, onClick: () -> Unit) = Button(c).apply {
+                text = label
+                textSize = 30f
+                setTextColor(Color.WHITE)
+                setBackgroundColor(Color.TRANSPARENT)
+                setOnClickListener { onClick() }
+            }.also { addView(it, LinearLayout.LayoutParams(0, h, 1f)) }
+            btn("\u23EE") { prevLocal() }
+            btn("-10") { seek(-10) }
+            btn("\u23EF") { playPause() }
+            btn("+10") { seek(10) }
+            btn("\u23ED") { nextLocal() }
+            btn("\u2715") { stopLocal() }
+        }
+        box.addView(bar, FrameLayout.LayoutParams(MATCH, ViewGroup.LayoutParams.WRAP_CONTENT, android.view.Gravity.BOTTOM))
+        // Un toucher sur l'image montre ou cache les gros boutons
+        lv.setOnTouchListener { _, e ->
+            if (e.action == MotionEvent.ACTION_UP) {
+                bar.visibility = if (bar.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+            }
+            true
+        }
+        // Sous le rideau (verrou) et le voile de nuit : le verrou de stationnement garde la priorité
+        val at = (st.indexOfChild(lock).takeIf { it >= 0 } ?: st.childCount)
+        st.addView(box, at, FrameLayout.LayoutParams(MATCH, MATCH))
+        localBox = box
+        localView = lv
+        localBar = bar
+        lv.setVideoURI(item.uri)
+        main.removeCallbacks(saver)
+        main.postDelayed(saver, 5000)
+        applyPadding()
+        onModeChanged?.invoke()
+    }
+
+    private fun nextLocal() {
+        val n = LocalVideo.list(context).size
+        if (queueIndex + 1 < n) {
+            saveLocalPosition()
+            playLocal(queueIndex + 1)
+        }
+    }
+
+    private fun prevLocal() {
+        val lv = localView ?: return
+        // Comme un lecteur audio : d'abord retour au début, puis vidéo précédente
+        if (lv.currentPosition > 3000 || queueIndex == 0) lv.seekTo(0)
+        else {
+            saveLocalPosition()
+            playLocal(queueIndex - 1)
+        }
+    }
+
+    fun stopLocal() {
+        val box = localBox ?: return
+        saveLocalPosition()
+        main.removeCallbacks(saver)
+        runCatching { localView?.stopPlayback() }
+        (box.parent as? ViewGroup)?.removeView(box)
+        localBox = null
+        localView = null
+        localBar = null
+        applyPadding()
+        onModeChanged?.invoke()
+    }
 
     fun scrollPage(direction: Int) {
         if (locked) return
@@ -180,6 +366,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         val p = Presentation(context, display.display, android.R.style.Theme_DeviceDefault_NoActionBar)
         val c = p.context
         val density = dpi / 160f
+        this.density = density
 
         val w = WebView(c)
         Web.setup(w, autoplay = true)
@@ -213,6 +400,8 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
                 fullCallback = callback
                 view.setBackgroundColor(Color.BLACK)
                 stage?.addView(view, 1, FrameLayout.LayoutParams(MATCH, MATCH))
+                applyPadding()
+                onModeChanged?.invoke()
             }
 
             override fun onHideCustomView() {
@@ -228,6 +417,11 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         val st = FrameLayout(c).apply {
             setBackgroundColor(Color.BLACK)
             addView(w, FrameLayout.LayoutParams(MATCH, MATCH))
+            addView(View(c).apply {
+                setBackgroundColor(0x99000000.toInt())
+                visibility = View.GONE
+                dim = this
+            }, FrameLayout.LayoutParams(MATCH, MATCH))
             addView(lk, FrameLayout.LayoutParams(MATCH, MATCH))
         }
         val root = FrameLayout(c).apply {
@@ -243,6 +437,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         lock = lk
         lk.visibility = if (locked) View.VISIBLE else View.GONE
         applyPadding()
+        applyNight()
 
         w.onResume()
         w.resumeTimers()
@@ -254,7 +449,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         val st = stage ?: return
         val v = visible
         val lp = st.layoutParams as? FrameLayout.LayoutParams ?: return
-        if (v == null || width == 0) {
+        if (v == null || width == 0 || isFullscreen()) {
             lp.setMargins(0, 0, 0, 0)
         } else {
             lp.setMargins(v.left.coerceAtLeast(0), v.top.coerceAtLeast(0),
@@ -288,9 +483,12 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         fullView?.let { v -> (v.parent as? ViewGroup)?.removeView(v) }
         fullView = null
         fullCallback = null
+        applyPadding()
+        onModeChanged?.invoke()
     }
 
     fun release() {
+        stopLocal()
         main.removeCallbacksAndMessages(null)
         Web.flushCookies()
         removeFullView()
@@ -306,11 +504,20 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         vd = null
         stage = null
         lock = null
+        dim = null
     }
 
     private companion object {
         const val TAG = "YutoVideo"
         const val KEY_LAST = "last_url"
+
+        /** La vidéo de la page prend tout l'écran (YouTube mobile garde sa propre mise en page). */
+        const val JS_FILL_ON =
+            "(function(){var s=document.getElementById('yuto-fill');if(!s){s=document.createElement('style');" +
+                "s.id='yuto-fill';s.textContent='video{position:fixed!important;top:0!important;left:0!important;" +
+                "width:100vw!important;height:100vh!important;object-fit:contain!important;" +
+                "z-index:2147483647!important;background:#000!important}';document.head.appendChild(s)}})()"
+        const val JS_FILL_OFF = "(function(){var s=document.getElementById('yuto-fill');if(s)s.remove()})()"
         const val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
     }
 }
