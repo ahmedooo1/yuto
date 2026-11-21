@@ -7,6 +7,7 @@ import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
+import fr.ahmad.yuto.MirrorSession
 import fr.ahmad.yuto.LocalVideo
 import fr.ahmad.yuto.R
 import fr.ahmad.yuto.Settings
@@ -29,6 +30,10 @@ class MenuScreen(carContext: CarContext, private val renderer: VideoRenderer) : 
         list.addItem(row(str(if (night) R.string.menu_night_off else R.string.menu_night_on)) {
             Settings.setNight(carContext, !night)
             renderer.applyNight()
+            screenManager.pop()
+        })
+        list.addItem(row(str(if (MirrorSession.active) R.string.mirror_stop else R.string.mirror_idle)) {
+            if (MirrorSession.active) renderer.stopMirror()
             screenManager.pop()
         })
         val n = LocalVideo.list(carContext).size
