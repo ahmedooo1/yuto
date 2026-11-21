@@ -64,4 +64,11 @@
     <string name="local_count">%1$d vidéo(s) dans la liste</string>
     <string name="night_label">Mode nuit</string>
     <string name="night_hint">Assombrit l’image et demande un thème sombre aux pages. Aussi activable depuis le menu de la voiture.</string>
+    <string name="mirror_title">Recopie de l’écran du téléphone</string>
+    <string name="mirror_hint">À l’arrêt : lancez le partage, acceptez la demande Android, puis ouvrez Facebook, Instagram ou une autre appli vidéo sur le téléphone. Yuto affiche automatiquement l’image dans la voiture. Contrôlez la lecture sur le téléphone. Les vidéos verticales restent centrées avec des bandes noires. Les vidéos protégées peuvent rester noires. Le son suit la sortie habituelle du téléphone / Bluetooth / Android Auto ; il n’est pas capturé. Le partage de tout l’écran peut afficher vos notifications privées. Arrêtez le partage après utilisation.</string>
+    <string name="mirror_start">Partager l’écran</string>
+    <string name="mirror_stop">Arrêter le partage</string>
+    <string name="mirror_active">Partage actif. Ouvrez votre appli vidéo sur le téléphone.</string>
+    <string name="mirror_idle">Lancez le partage dans Yuto sur le téléphone</string>
+    <string name="mirror_error">Impossible de lancer le partage. Réessayez et acceptez la demande Android.</string>
 </resources>

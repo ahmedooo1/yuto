@@ -27,6 +27,8 @@ import android.widget.LinearLayout
 import android.widget.VideoView
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import fr.ahmad.yuto.MirrorSession
+import fr.ahmad.yuto.MirrorView
 import fr.ahmad.yuto.LocalVideo
 import fr.ahmad.yuto.Settings
 import androidx.car.app.SurfaceCallback
@@ -63,6 +65,11 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     private var localBar: View? = null
     private var queueIndex = -1
     private var dim: View? = null
+    private var mirrorView: MirrorView? = null
+    private val mirrorChanged: () -> Unit = {
+        if (MirrorSession.active) showMirror() else removeMirror()
+    }
+    init { MirrorSession.addListener(mirrorChanged) }
     private var density = 1f
     private var immersive = false
 
@@ -127,12 +134,12 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     }
 
     override fun onScroll(distanceX: Float, distanceY: Float) {
-        if (locked || fullView != null) return
+        if (locked || fullView != null || mirrorView != null) return
         web?.evaluateJavascript(Web.jsScroll(distanceY.toInt()), null)
     }
 
     override fun onFling(velocityX: Float, velocityY: Float) {
-        if (locked || fullView != null) return
+        if (locked || fullView != null || mirrorView != null) return
         web?.evaluateJavascript(Web.jsScroll((-velocityY * 0.35f).toInt()), null)
     }
 
@@ -141,6 +148,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     // ---------------- Commandes de l'écran ----------------
 
     fun load(url: String) {
+        stopMirror()
         stopLocal()
         setFullscreen(false)
         exitFullscreen()
@@ -155,6 +163,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
 
     /** Retour : sort du plein écran, sinon page précédente. */
     fun back(): Boolean {
+        if (mirrorView != null) { stopMirror(); return true }
         if (localView != null) {
             stopLocal()
             return true
@@ -176,6 +185,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     }
 
     fun playPause() {
+        if (mirrorView != null) return // Source app is controlled on the phone.
         val lv = localView
         if (lv != null) {
             if (lv.isPlaying) {
@@ -186,6 +196,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     }
 
     fun seek(seconds: Int) {
+        if (mirrorView != null) return
         val lv = localView
         if (lv != null) {
             lv.seekTo((lv.currentPosition + seconds * 1000).coerceIn(0, lv.duration.coerceAtLeast(0)))
@@ -209,16 +220,49 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
 
     // ---------------- Plein écran ----------------
 
-    fun isFullscreen() = immersive || fullView != null || localView != null
+    fun isFullscreen() = immersive || fullView != null || localView != null || mirrorView != null
 
     /**
      * Plein écran : la page passe sous les boutons de la voiture (marges à zéro) et
      * la vidéo est agrandie sur toute la surface.
      */
     fun setFullscreen(on: Boolean) {
+        if (mirrorView != null) return
         if (immersive == on) return
         immersive = on
         web?.evaluateJavascript(if (on) JS_FILL_ON else JS_FILL_OFF, null)
+        applyPadding()
+        onModeChanged?.invoke()
+    }
+
+    // ---------------- Phone screen sharing ----------------
+
+    fun isMirroring() = mirrorView != null
+
+    fun showMirror() {
+        val st = stage ?: return
+        if (!MirrorSession.active || mirrorView != null) return
+        stopLocal()
+        exitFullscreen()
+        setFullscreen(false)
+        web?.evaluateJavascript(Web.JS_PAUSE, null)
+        val view = MirrorView(st.context)
+        // BELOW both the night veil and ParkGuard curtain. No remote phone input.
+        st.addView(view, 1, FrameLayout.LayoutParams(MATCH, MATCH))
+        mirrorView = view
+        applyPadding()
+        onModeChanged?.invoke()
+    }
+
+    fun stopMirror() {
+        removeMirror()
+        if (MirrorSession.active) MirrorSession.stop(context)
+    }
+
+    private fun removeMirror() {
+        val view = mirrorView ?: return
+        mirrorView = null
+        (view.parent as? ViewGroup)?.removeView(view)
         applyPadding()
         onModeChanged?.invoke()
     }
@@ -242,6 +286,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
 
     /** Lit la vidéo n° [index] de la file, là où elle s'était arrêtée ; enchaîne ensuite avec la suivante. */
     fun playLocal(index: Int) {
+        stopMirror()
         val st = stage ?: return
         val items = LocalVideo.list(context)
         val item = items.getOrNull(index) ?: return
@@ -337,7 +382,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     }
 
     fun scrollPage(direction: Int) {
-        if (locked) return
+        if (locked || mirrorView != null) return
         web?.evaluateJavascript(Web.jsScroll(direction * height / 2), null)
     }
 
@@ -441,6 +486,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
         w.onResume()
         w.resumeTimers()
         w.loadUrl(prefs.getString(KEY_LAST, null) ?: Web.HOME)
+        if (MirrorSession.active) showMirror()
     }
 
     /** La page n'est pas cachée sous les boutons d'Android Auto. */
@@ -487,6 +533,8 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     }
 
     fun release() {
+        MirrorSession.removeListener(mirrorChanged)
+        stopMirror()
         stopLocal()
         main.removeCallbacksAndMessages(null)
         Web.flushCookies()
