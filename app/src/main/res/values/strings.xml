@@ -65,4 +65,11 @@
     <string name="local_count">%1$d video(s) in the list</string>
     <string name="night_label">Night mode</string>
     <string name="night_hint">Dims the picture and asks pages for a dark theme. Can also be switched in the car menu.</string>
+    <string name="mirror_title">Phone screen mirroring</string>
+    <string name="mirror_hint">While parked: start sharing, approve the Android prompt, then open Facebook, Instagram or another video app on your phone. Yuto shows the picture in the car automatically. Control playback on your phone. Portrait videos stay centered with black borders. Protected videos may be black. Sound uses your normal phone / Bluetooth / Android Auto route; it is not captured. Sharing the entire screen can show private notifications. Stop sharing when done.</string>
+    <string name="mirror_start">Start screen sharing</string>
+    <string name="mirror_stop">Stop screen sharing</string>
+    <string name="mirror_active">Sharing is on. Open your video app on the phone.</string>
+    <string name="mirror_idle">Start screen sharing in Yuto on the phone</string>
+    <string name="mirror_error">Screen sharing could not start. Please try again and approve the Android prompt.</string>
 </resources>
