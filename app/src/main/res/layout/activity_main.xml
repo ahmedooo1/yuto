@@ -115,6 +115,34 @@
                 android:paddingStart="40dp"
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="18dp"
+                android:background="@color/line" />
+
+            <CheckBox
+                android:id="@+id/drivingBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:buttonTint="@color/lime"
+                android:fontFamily="sans-serif-medium"
+                android:paddingStart="8dp"
+                android:text="@string/driving_label"
+                android:textColor="@color/text"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/drivingHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingMultiplier="1.15"
+                android:paddingStart="40dp"
+                android:textColor="@color/muted"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <!-- Compte YouTube -->
