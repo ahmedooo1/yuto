@@ -101,6 +101,10 @@ object ParkGuard {
     fun shouldLock(state: State, strict: Boolean): Boolean =
         if (strict) state != State.PARKED else state == State.MOVING
 
+    /** Choix explicite de l'utilisateur : « vidéo même en roulant » enlève tout verrou. */
+    fun shouldLock(state: State, strict: Boolean, allowDriving: Boolean): Boolean =
+        !allowDriving && shouldLock(state, strict)
+
     fun step(
         current: State,
         raw: Raw,
