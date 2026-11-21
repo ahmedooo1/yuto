@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Recherche vocale depuis l'écran de la voiture (micro du téléphone) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Verrou de stationnement : vitesse réelle de la voiture (Android Auto) -->
     <uses-permission android:name="com.google.android.gms.permission.CAR_SPEED" />
     <!-- Android Auto : modèle de navigation + dessin libre sur la Surface de la voiture -->
@@ -46,7 +48,7 @@
             android:foregroundServiceType="location" />
 
         <!-- Écran de la voiture. Catégorie NAVIGATION : c'est elle qui donne une Surface
-             où l'on peut dessiner librement (déjà validé sur la Golf avec Mapo). -->
+             où l'on peut dessiner librement (déjà validé sur la voiture avec Mapo). -->
         <service
             android:name=".car.YutoCarAppService"
             android:exported="true">
