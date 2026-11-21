@@ -13,7 +13,7 @@
     <string name="login_button">Sign in to YouTube</string>
     <string name="login_done">Done</string>
 
-    <string name="car_title">In the Golf</string>
+    <string name="car_title">In the car</string>
     <string name="car_step1">Android Auto settings: tap the version 10 times, then the menu ⋮ and Unknown sources.</string>
     <string name="car_step2">Plug in the phone and open Yuto from the car app list.</string>
     <string name="car_step3">Stop the car: after 10 seconds stopped, the video appears. As soon as it moves, the picture hides and only the sound continues.</string>
@@ -35,6 +35,14 @@
     <string name="strict_label">Strict lock (recommended)</string>
     <string name="strict_on">Video stays hidden until the stop is confirmed (10 s stopped).</string>
     <string name="strict_off">Flexible mode: video shows after 2 s stopped, even if the speed can\'t be read. It still hides as soon as movement is measured.</string>
+    <string name="driving_label">Allow video while driving</string>
+    <string name="driving_off">Off: the picture hides as soon as the car moves. Recommended.</string>
+    <string name="driving_on">⚠️ On: the video stays visible while you drive. Watching the screen while driving is dangerous and illegal in most countries. Your choice, your responsibility.</string>
+    <string name="voice_listening">Listening… say your search</string>
+    <string name="voice_unavailable">Voice recognition is not available on this phone.</string>
+    <string name="voice_no_permission">Allow the microphone on the phone (in Yuto) to search by voice.</string>
+    <string name="voice_error">Voice search did not work. Try again.</string>
+    <string name="voice_result">Search: %1$s</string>
     <string name="login_connected">✓ Connected to your YouTube account</string>
     <string name="login_not_connected">Not connected</string>
     <string name="logout_button">Sign out</string>
