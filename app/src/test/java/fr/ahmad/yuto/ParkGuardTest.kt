@@ -53,6 +53,17 @@ class ParkGuardTest {
         assertEquals(false, ParkGuard.shouldLock(State.PARKED, strict = true))
     }
 
+    @Test fun allowDrivingDisablesLock() {
+        // Choix explicite « vidéo en roulant » : plus aucun verrou, quel que soit l'état
+        assertEquals(false, ParkGuard.shouldLock(State.MOVING, strict = true, allowDriving = true))
+        assertEquals(false, ParkGuard.shouldLock(State.UNKNOWN, strict = true, allowDriving = true))
+        assertEquals(false, ParkGuard.shouldLock(State.PARKED, strict = false, allowDriving = true))
+        // Sans ce choix, le comportement existant ne change pas
+        assertEquals(true, ParkGuard.shouldLock(State.MOVING, strict = false, allowDriving = false))
+        assertEquals(true, ParkGuard.shouldLock(State.UNKNOWN, strict = true, allowDriving = false))
+        assertEquals(false, ParkGuard.shouldLock(State.PARKED, strict = true, allowDriving = false))
+    }
+
     @Test fun softModeShortWait() {
         val since = ParkGuard.step(State.MOVING, Raw.STOPPED, 0, 1_000, ParkGuard.QUICK_UNLOCK_MS).second
         assertEquals(State.PARKED, ParkGuard.step(State.MOVING, Raw.STOPPED, since, 1_000 + ParkGuard.QUICK_UNLOCK_MS, ParkGuard.QUICK_UNLOCK_MS).first)
