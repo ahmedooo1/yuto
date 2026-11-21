@@ -12,7 +12,7 @@
     <string name="login_button">تسجيل الدخول إلى YouTube</string>
     <string name="login_done">تم</string>
 
-    <string name="car_title">في الغولف</string>
+    <string name="car_title">في السيارة</string>
     <string name="car_step1">في إعدادات Android Auto: اضغط على رقم الإصدار 10 مرات، ثم القائمة ⋮ وفعّل «مصادر غير معروفة».</string>
     <string name="car_step2">اوصل الهاتف بالسيارة وافتح Yuto من قائمة التطبيقات على الشاشة.</string>
     <string name="car_step3">أوقف السيارة: بعد 10 ثوانٍ من التوقف يظهر الفيديو. وعند أول حركة تختفي الصورة ويستمر الصوت فقط.</string>
@@ -34,6 +34,14 @@
     <string name="strict_label">القفل الصارم (موصى به)</string>
     <string name="strict_on">يبقى الفيديو مخفياً حتى يتأكد التطبيق من التوقف (10 ثوانٍ).</string>
     <string name="strict_off">الوضع المرن: يظهر الفيديو بعد ثانيتين من التوقف، حتى لو تعذّرت قراءة السرعة. ويختفي فور قياس أي حركة.</string>
+    <string name="driving_label">السماح بالفيديو أثناء القيادة</string>
+    <string name="driving_off">متوقف: تختفي الصورة فور تحرّك السيارة. هذا هو الموصى به.</string>
+    <string name="driving_on">⚠️ مفعّل: يبقى الفيديو ظاهراً أثناء القيادة. مشاهدة الشاشة أثناء القيادة خطيرة ومخالفة للقانون في معظم البلدان. هذا اختيارك وأنت المسؤول.</string>
+    <string name="voice_listening">أستمع إليك… قل ما تريد البحث عنه</string>
+    <string name="voice_unavailable">التعرّف على الصوت غير متوفر على هذا الهاتف.</string>
+    <string name="voice_no_permission">اسمح بالميكروفون على الهاتف (في Yuto) لتستخدم البحث الصوتي.</string>
+    <string name="voice_error">لم ينجح البحث الصوتي. حاول مرة أخرى.</string>
+    <string name="voice_result">بحث: %1$s</string>
     <string name="login_connected">✓ متصل بحسابك في YouTube</string>
     <string name="login_not_connected">غير متصل</string>
     <string name="logout_button">تسجيل الخروج</string>
