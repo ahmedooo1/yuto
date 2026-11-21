@@ -20,6 +20,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusText: TextView
     private lateinit var allowButton: Button
 
+    private var mirrorButton: Button? = null
+    private var mirrorStatus: TextView? = null
+    private val mirrorChanged: () -> Unit = { refreshMirror() }
+    private val captureScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val data = result.data
+        if (result.resultCode == RESULT_OK && data != null) {
+            ContextCompat.startForegroundService(this,
+                Intent(this, MirrorService::class.java).putExtra(MirrorService.EXTRA_DATA, data))
+        }
+    }
+
     private val pickVideos = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
         if (uris.isNotEmpty()) {
             uris.forEach { u ->
@@ -67,7 +78,57 @@ class MainActivity : AppCompatActivity() {
         val night = findViewById<android.widget.CheckBox>(R.id.nightBox)
         night.isChecked = Settings.night(this)
         night.setOnCheckedChangeListener { _, on -> Settings.setNight(this, on) }
+        buildMirrorControls()
         buildSteps(findViewById(R.id.steps))
+    }
+
+    private fun buildMirrorControls() {
+        val parent = findViewById<LinearLayout>(R.id.steps).parent as LinearLayout
+        val card = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(20), dp(20), dp(20))
+            setBackgroundResource(R.drawable.card)
+        }
+        card.addView(TextView(this).apply {
+            setText(R.string.mirror_title); textSize = 21f
+            setTextColor(ContextCompat.getColor(context, R.color.text))
+        })
+        card.addView(TextView(this).apply {
+            setText(R.string.mirror_hint); textSize = 15f
+            setTextColor(ContextCompat.getColor(context, R.color.muted))
+            setPadding(0, dp(12), 0, dp(12))
+        })
+        mirrorStatus = TextView(this).apply {
+            textSize = 15f
+            setTextColor(ContextCompat.getColor(context, R.color.muted))
+        }.also { card.addView(it) }
+        mirrorButton = Button(this).apply {
+            isAllCaps = false; textSize = 17f; minHeight = dp(54)
+            setTextColor(ContextCompat.getColor(context, R.color.lime))
+            setBackgroundResource(R.drawable.btn_ghost)
+            setOnClickListener {
+                if (MirrorSession.active) MirrorSession.stop(this@MainActivity)
+                else captureScreen.launch(getSystemService(android.media.projection.MediaProjectionManager::class.java).createScreenCaptureIntent())
+            }
+        }.also { card.addView(it, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(16) }) }
+        parent.addView(card, 2, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(20) })
+        refreshMirror()
+    }
+
+    private fun refreshMirror() {
+        mirrorButton?.setText(if (MirrorSession.active) R.string.mirror_stop else R.string.mirror_start)
+        mirrorStatus?.setText(if (MirrorSession.active) R.string.mirror_active else R.string.mirror_idle)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        MirrorSession.addListener(mirrorChanged)
+        refreshMirror()
+    }
+
+    override fun onStop() {
+        MirrorSession.removeListener(mirrorChanged)
+        super.onStop()
     }
 
     private fun refreshLocalVideo() {
