@@ -13,6 +13,10 @@ YouTube sur l'écran Android Auto de la voiture, **à l'arrêt par défaut** (un
 - Option « Autoriser la vidéo en roulant » sur le téléphone (décochée par défaut, avec
   avertissement) : la vidéo reste visible même en conduisant. Le verrou de stationnement
   reste actif tant qu'elle est décochée.
+- **Anti-pubs gratuit** (`AdBlock`) : les requêtes vers les régies pub (doubleclick…) et les pings
+  pub de YouTube sont bloquées, et un script injecté retire les emplacements pub du lecteur, cache
+  les encarts pub de l'accueil et passe les pubs vidéo restantes en accéléré (« Ignorer » cliqué
+  tout seul). Aucun abonnement.
 - En passant à une autre appli dans la voiture (Mapo…), la page reste vivante : le son continue.
 - Connexion au compte YouTube depuis le téléphone (cookies partagés avec la voiture).
 
