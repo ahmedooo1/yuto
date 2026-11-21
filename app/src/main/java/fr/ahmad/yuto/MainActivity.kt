@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
@@ -18,6 +19,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var statusText: TextView
     private lateinit var allowButton: Button
+
+    private val pickVideos = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+        if (uris.isNotEmpty()) {
+            uris.forEach { u ->
+                runCatching {
+                    contentResolver.takePersistableUriPermission(u, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+            }
+            LocalVideo.add(this, uris)
+            refreshLocalVideo()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,13 +59,29 @@ class MainActivity : AppCompatActivity() {
             Settings.setAllowDriving(this, on)
             drivingHint(on)
         }
+        findViewById<Button>(R.id.pickVideoButton).setOnClickListener { pickVideos.launch(arrayOf("video/*")) }
+        findViewById<Button>(R.id.clearVideosButton).setOnClickListener {
+            LocalVideo.clear(this)
+            refreshLocalVideo()
+        }
+        val night = findViewById<android.widget.CheckBox>(R.id.nightBox)
+        night.isChecked = Settings.night(this)
+        night.setOnCheckedChangeListener { _, on -> Settings.setNight(this, on) }
         buildSteps(findViewById(R.id.steps))
+    }
+
+    private fun refreshLocalVideo() {
+        val n = LocalVideo.list(this).size
+        findViewById<TextView>(R.id.localVideoName).text =
+            if (n == 0) getString(R.string.local_none) else getString(R.string.local_count, n)
+        findViewById<Button>(R.id.clearVideosButton).visibility = if (n == 0) android.view.View.GONE else android.view.View.VISIBLE
     }
 
     override fun onResume() {
         super.onResume()
         refresh()
         refreshLogin()
+        refreshLocalVideo()
     }
 
     private fun strictHint(on: Boolean) {
