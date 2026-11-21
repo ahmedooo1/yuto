@@ -18,11 +18,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.car.app.SurfaceCallback
 import androidx.car.app.SurfaceContainer
+import fr.ahmad.yuto.AdBlock
 import fr.ahmad.yuto.R
 import fr.ahmad.yuto.Web
 
@@ -190,7 +192,16 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
                 return !Web.allowed(u.host)
             }
 
+            // Anti-pubs : requêtes des régies pub remplacées par une réponse vide
+            override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
+                AdBlock.intercept(request)
+
+            override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
+                AdBlock.inject(view)
+            }
+
             override fun onPageFinished(view: WebView, url: String?) {
+                AdBlock.inject(view)
                 if (url != null && Web.allowed(Uri.parse(url).host)) prefs.edit().putString(KEY_LAST, url).apply()
                 Web.flushCookies()
             }
