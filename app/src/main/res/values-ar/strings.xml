@@ -45,4 +45,23 @@
     <string name="login_connected">✓ متصل بحسابك في YouTube</string>
     <string name="login_not_connected">غير متصل</string>
     <string name="logout_button">تسجيل الخروج</string>
+    <string name="menu_title">Yuto</string>
+    <string name="menu_home">الصفحة الرئيسية ليوتيوب</string>
+    <string name="menu_fullscreen_on">ملء الشاشة</string>
+    <string name="menu_fullscreen_off">الخروج من ملء الشاشة</string>
+    <string name="menu_night_on">تفعيل الوضع الليلي</string>
+    <string name="menu_night_off">إيقاف الوضع الليلي</string>
+    <string name="menu_local">فيديوهات الهاتف (%1$d)</string>
+    <string name="menu_local_none">لا توجد فيديوهات من الهاتف. أضف بعضها من تطبيق Yuto على الهاتف.</string>
+    <string name="menu_videos_title">فيديوهات الهاتف</string>
+    <string name="resume_at">المتابعة من %1$d:%2$02d</string>
+    <string name="menu_local_stop">إيقاف فيديو الهاتف</string>
+    <string name="local_title">فيديوهات من الهاتف</string>
+    <string name="local_text">اختر فيديوهات مخزّنة على الهاتف، ثم افتح القائمة في السيارة (زر البيت). تُشغَّل بالترتيب وتكمل من حيث توقفت.</string>
+    <string name="local_pick">إضافة فيديوهات</string>
+    <string name="local_clear">تفريغ القائمة</string>
+    <string name="local_none">لم تتم إضافة فيديو</string>
+    <string name="local_count">%1$d فيديو في القائمة</string>
+    <string name="night_label">الوضع الليلي</string>
+    <string name="night_hint">يعتّم الصورة ويطلب مظهراً داكناً من الصفحات. يمكن تفعيله أيضاً من قائمة السيارة.</string>
 </resources>
