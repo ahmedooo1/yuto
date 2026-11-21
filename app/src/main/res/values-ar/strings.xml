@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">يوتيوب على شاشة سيارتك، فقط حين تكون متوقفاً.</string>
+
+    <string name="status_title">قفل التوقف</string>
+    <string name="status_ok">جاهز. الموقع وسرعة السيارة مسموح بهما.</string>
+    <string name="status_missing">يحتاج Parko إلى موقعك ليعرف أن السيارة متوقفة. بدونه يبقى الفيديو مخفياً.</string>
+    <string name="allow">السماح</string>
+
+    <string name="login_title">حسابك في YouTube</string>
+    <string name="login_text">سجّل الدخول مرة واحدة هنا على الهاتف، فتظهر اشتراكاتك وسجلّك على شاشة السيارة. اختياري.</string>
+    <string name="login_button">تسجيل الدخول إلى YouTube</string>
+    <string name="login_done">تم</string>
+
+    <string name="car_title">في الغولف</string>
+    <string name="car_step1">في إعدادات Android Auto: اضغط على رقم الإصدار 10 مرات، ثم القائمة ⋮ وفعّل «مصادر غير معروفة».</string>
+    <string name="car_step2">اوصل الهاتف بالسيارة وافتح Parko من قائمة التطبيقات على الشاشة.</string>
+    <string name="car_step3">أوقف السيارة: بعد 10 ثوانٍ من التوقف يظهر الفيديو. وعند أول حركة تختفي الصورة ويستمر الصوت فقط.</string>
+
+    <string name="credit">من تطوير Ahmad Ahmad</string>
+
+    <string name="notif_channel">قفل التوقف</string>
+    <string name="notif_text">التحقق من توقف السيارة قبل عرض الفيديو</string>
+
+    <string name="lock_driving">الفيديو متوقف أثناء القيادة</string>
+    <string name="lock_driving_sub">الصوت مستمر. توقف في مكان آمن لتشاهد.</string>
+    <string name="lock_stopped">السيارة متوقفة</string>
+    <string name="lock_countdown">يظهر الفيديو بعد %1$d ث</string>
+    <string name="lock_checking">جارٍ التأكد من توقف السيارة</string>
+    <string name="lock_checking_sub">بانتظار سرعة السيارة أو GPS…</string>
+    <string name="lock_no_permission">افتح Parko على الهاتف واسمح بالوصول إلى الموقع.</string>
+    <string name="only_parked">البحث متاح عندما تكون السيارة متوقفة</string>
+    <string name="search_hint">ابحث في YouTube</string>
+</resources>

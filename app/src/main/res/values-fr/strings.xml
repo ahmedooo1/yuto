@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tagline">YouTube sur l\'écran de la voiture. Seulement à l\'arrêt.</string>
+
+    <string name="status_title">Verrou de stationnement</string>
+    <string name="status_ok">Prêt. Position et vitesse de la voiture autorisées.</string>
+    <string name="status_missing">Parko a besoin de la position pour savoir que la voiture est arrêtée. Sans elle, la vidéo reste cachée.</string>
+    <string name="allow">Autoriser</string>
+
+    <string name="login_title">Ton compte YouTube</string>
+    <string name="login_text">Connecte-toi une fois ici, sur le téléphone. L\'écran de la voiture affiche ensuite tes abonnements et ton historique. Facultatif.</string>
+    <string name="login_button">Se connecter à YouTube</string>
+    <string name="login_done">Terminé</string>
+
+    <string name="car_title">Dans la Golf</string>
+    <string name="car_step1">Réglages Android Auto : touche 10 fois la version, puis le menu ⋮ et Sources inconnues.</string>
+    <string name="car_step2">Branche le téléphone et ouvre Parko dans la liste des applis de la voiture.</string>
+    <string name="car_step3">Arrête la voiture : après 10 secondes à l\'arrêt, la vidéo apparaît. Dès qu\'elle bouge, l\'image se cache et seul le son continue.</string>
+
+    <string name="credit">Créé par Ahmad Ahmad</string>
+
+    <string name="notif_channel">Verrou de stationnement</string>
+    <string name="notif_text">Vérifie que la voiture est arrêtée avant d\'afficher la vidéo</string>
+
+    <string name="lock_driving">Vidéo en pause pendant la conduite</string>
+    <string name="lock_driving_sub">Le son continue. Arrête-toi dans un endroit sûr pour regarder.</string>
+    <string name="lock_stopped">Voiture arrêtée</string>
+    <string name="lock_countdown">Vidéo dans %1$d s</string>
+    <string name="lock_checking">Vérification de l\'arrêt de la voiture</string>
+    <string name="lock_checking_sub">En attente de la vitesse de la voiture ou du GPS…</string>
+    <string name="lock_no_permission">Ouvre Parko sur le téléphone et autorise la position.</string>
+    <string name="only_parked">La recherche est disponible à l\'arrêt</string>
+    <string name="search_hint">Rechercher sur YouTube</string>
+</resources>
