@@ -31,4 +31,10 @@
     <string name="lock_no_permission">افتح Yuto على الهاتف واسمح بالوصول إلى الموقع.</string>
     <string name="only_parked">البحث متاح عندما تكون السيارة متوقفة</string>
     <string name="search_hint">ابحث في YouTube</string>
+    <string name="strict_label">القفل الصارم (موصى به)</string>
+    <string name="strict_on">يبقى الفيديو مخفياً حتى يتأكد التطبيق من التوقف (10 ثوانٍ).</string>
+    <string name="strict_off">الوضع المرن: يظهر الفيديو بعد ثانيتين من التوقف، حتى لو تعذّرت قراءة السرعة. ويختفي فور قياس أي حركة.</string>
+    <string name="login_connected">✓ متصل بحسابك في YouTube</string>
+    <string name="login_not_connected">غير متصل</string>
+    <string name="logout_button">تسجيل الخروج</string>
 </resources>

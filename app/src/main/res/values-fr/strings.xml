@@ -31,4 +31,10 @@
     <string name="lock_no_permission">Ouvre Yuto sur le téléphone et autorise la position.</string>
     <string name="only_parked">La recherche est disponible à l\'arrêt</string>
     <string name="search_hint">Rechercher sur YouTube</string>
+    <string name="strict_label">Verrou strict (recommandé)</string>
+    <string name="strict_on">La vidéo reste cachée tant que l\'arrêt n\'est pas confirmé (10 s à l\'arrêt).</string>
+    <string name="strict_off">Mode souple : la vidéo apparaît après 2 s à l\'arrêt, même si la vitesse est illisible. Elle se cache dès qu\'un mouvement est mesuré.</string>
+    <string name="login_connected">✓ Connecté à ton compte YouTube</string>
+    <string name="login_not_connected">Non connecté</string>
+    <string name="logout_button">Se déconnecter</string>
 </resources>

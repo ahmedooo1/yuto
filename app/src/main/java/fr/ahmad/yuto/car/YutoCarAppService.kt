@@ -29,6 +29,7 @@ import androidx.lifecycle.lifecycleScope
 import fr.ahmad.yuto.ParkGuard
 import fr.ahmad.yuto.ParkGuardService
 import fr.ahmad.yuto.R
+import fr.ahmad.yuto.Settings
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -104,27 +105,34 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
         }.onFailure { Log.i(TAG, "car speed not available: ${it.message}") }
     }
 
+    /** Vidéo visible ? (selon l'état et la case "verrou strict" du téléphone) */
+    private fun videoShown() = !ParkGuard.shouldLock(state, Settings.strictLock(carContext))
+    private var shownInTemplate: Boolean? = null
+
     private fun pushLock() {
         val st = state
-        val locked = st != ParkGuard.State.PARKED
-        val waiting = ParkGuard.remainingMs
+        val strict = Settings.strictLock(carContext)
+        val wait = if (strict) ParkGuard.UNLOCK_AFTER_MS else ParkGuard.QUICK_UNLOCK_MS
+        ParkGuard.unlockAfterMs = wait
+        val locked = ParkGuard.shouldLock(st, strict)
+        val waiting = ParkGuard.remainingMs.coerceAtMost(wait)
         val (title, sub) = when (st) {
             ParkGuard.State.PARKED -> "" to ""
             ParkGuard.State.MOVING ->
-                if (waiting < ParkGuard.UNLOCK_AFTER_MS) {
+                if (waiting < wait) {
                     str(R.string.lock_stopped) to str(R.string.lock_countdown, ((waiting + 999) / 1000).toInt())
                 } else str(R.string.lock_driving) to str(R.string.lock_driving_sub)
             ParkGuard.State.UNKNOWN ->
-                if (waiting < ParkGuard.UNLOCK_AFTER_MS) {
+                if (waiting < wait) {
                     str(R.string.lock_stopped) to str(R.string.lock_countdown, ((waiting + 999) / 1000).toInt())
                 } else str(R.string.lock_checking) to str(
                     if (ParkGuardService.hasLocation(carContext)) R.string.lock_checking_sub else R.string.lock_no_permission
                 )
         }
-        val progress = if (locked && waiting < ParkGuard.UNLOCK_AFTER_MS) {
-            1f - waiting.toFloat() / ParkGuard.UNLOCK_AFTER_MS
-        } else -1f
+        val progress = if (locked && waiting < wait) 1f - waiting.toFloat() / wait else -1f
         renderer.setLock(locked, title, sub, progress)
+        // Les boutons de la voiture suivent (recherche, défilement)
+        if (shownInTemplate != null && shownInTemplate != !locked) invalidate()
     }
 
     private fun str(id: Int, vararg args: Any) = carContext.getString(id, *args)
@@ -133,11 +141,12 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
         CarIcon.Builder(IconCompat.createWithResource(carContext, res)).setTint(CarColor.DEFAULT).build()
 
     override fun onGetTemplate(): Template {
-        val parked = state == ParkGuard.State.PARKED
+        val parked = videoShown()
+        shownInTemplate = parked
 
         val actions = ActionStrip.Builder()
             .addAction(Action.Builder().setIcon(icon(R.drawable.ic_search)).setOnClickListener {
-                if (state == ParkGuard.State.PARKED) screenManager.push(SearchScreen(carContext, renderer))
+                if (videoShown()) screenManager.push(SearchScreen(carContext, renderer))
                 else toast(R.string.only_parked)
             }.build())
             .addAction(Action.Builder().setIcon(icon(R.drawable.ic_back)).setOnClickListener {

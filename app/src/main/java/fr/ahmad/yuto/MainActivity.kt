@@ -26,7 +26,18 @@ class MainActivity : AppCompatActivity() {
         allowButton = findViewById(R.id.allowButton)
         allowButton.setOnClickListener { askPermissions() }
         findViewById<Button>(R.id.loginButton).setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            if (Web.isSignedIn()) {
+                Web.signOut { runOnUiThread { refreshLogin() } }
+            } else {
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
+        }
+        val strict = findViewById<android.widget.CheckBox>(R.id.strictBox)
+        strict.isChecked = Settings.strictLock(this)
+        strictHint(strict.isChecked)
+        strict.setOnCheckedChangeListener { _, on ->
+            Settings.setStrictLock(this, on)
+            strictHint(on)
         }
         buildSteps(findViewById(R.id.steps))
     }
@@ -34,6 +45,21 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         refresh()
+        refreshLogin()
+    }
+
+    private fun strictHint(on: Boolean) {
+        findViewById<TextView>(R.id.strictHint).setText(if (on) R.string.strict_on else R.string.strict_off)
+    }
+
+    /** Après "Terminé" : on montre clairement si le compte est connecté. */
+    private fun refreshLogin() {
+        val signed = Web.isSignedIn()
+        findViewById<TextView>(R.id.loginStatus).apply {
+            setText(if (signed) R.string.login_connected else R.string.login_not_connected)
+            setTextColor(ContextCompat.getColor(context, if (signed) R.color.ok else R.color.muted))
+        }
+        findViewById<Button>(R.id.loginButton).setText(if (signed) R.string.logout_button else R.string.login_button)
     }
 
     private fun refresh() {

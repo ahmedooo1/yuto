@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var web: WebView
+    private var closing = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,16 @@ class LoginActivity : AppCompatActivity() {
                 val u = request.url
                 if (u.scheme != "https" && u.scheme != "http") return true
                 return !Web.allowed(u.host)
+            }
+
+            // Retour sur YouTube une fois connecté : on revient tout seul à l'écran principal
+            override fun onPageFinished(view: WebView, url: String?) {
+                Web.flushCookies()
+                val host = url?.let { android.net.Uri.parse(it).host }.orEmpty()
+                if (host.endsWith("youtube.com") && Web.isSignedIn() && !closing) {
+                    closing = true
+                    view.postDelayed({ finish() }, 600)
+                }
             }
         }
         val done = Button(this).apply {

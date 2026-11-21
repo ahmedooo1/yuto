@@ -32,4 +32,10 @@
     <string name="lock_no_permission">Open Yuto on the phone and allow location.</string>
     <string name="only_parked">Search is available when the car is parked</string>
     <string name="search_hint">Search YouTube</string>
+    <string name="strict_label">Strict lock (recommended)</string>
+    <string name="strict_on">Video stays hidden until the stop is confirmed (10 s stopped).</string>
+    <string name="strict_off">Flexible mode: video shows after 2 s stopped, even if the speed can\'t be read. It still hides as soon as movement is measured.</string>
+    <string name="login_connected">✓ Connected to your YouTube account</string>
+    <string name="login_not_connected">Not connected</string>
+    <string name="logout_button">Sign out</string>
 </resources>

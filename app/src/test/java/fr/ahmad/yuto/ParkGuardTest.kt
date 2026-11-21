@@ -45,6 +45,19 @@ class ParkGuardTest {
         assertEquals(State.UNKNOWN, ParkGuard.step(State.PARKED, Raw.UNKNOWN, 500, 99_000).first)
     }
 
+    @Test fun softModeOnlyHidesRealMovement() {
+        assertEquals(true, ParkGuard.shouldLock(State.MOVING, strict = false))
+        assertEquals(false, ParkGuard.shouldLock(State.UNKNOWN, strict = false))
+        assertEquals(false, ParkGuard.shouldLock(State.PARKED, strict = false))
+        assertEquals(true, ParkGuard.shouldLock(State.UNKNOWN, strict = true))
+        assertEquals(false, ParkGuard.shouldLock(State.PARKED, strict = true))
+    }
+
+    @Test fun softModeShortWait() {
+        val since = ParkGuard.step(State.MOVING, Raw.STOPPED, 0, 1_000, ParkGuard.QUICK_UNLOCK_MS).second
+        assertEquals(State.PARKED, ParkGuard.step(State.MOVING, Raw.STOPPED, since, 1_000 + ParkGuard.QUICK_UNLOCK_MS, ParkGuard.QUICK_UNLOCK_MS).first)
+    }
+
     @Test fun fullFlowWithCarSpeed() {
         ParkGuard.onCarSpeed(50f, 0)
         assertEquals(State.MOVING, ParkGuard.state.value)

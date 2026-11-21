@@ -60,6 +60,25 @@ object Web {
 
     fun flushCookies() = runCatching { CookieManager.getInstance().flush() }
 
+    /** Compte YouTube connecté ? (cookies de session posés par la connexion Google) */
+    fun isSignedIn(): Boolean {
+        val cm = CookieManager.getInstance()
+        val all = listOf("https://m.youtube.com", "https://www.youtube.com", "https://youtube.com")
+            .joinToString(";") { cm.getCookie(it).orEmpty() }
+        return SIGNED_IN_COOKIES.any { all.contains("$it=") }
+    }
+
+    private val SIGNED_IN_COOKIES = listOf("LOGIN_INFO", "SAPISID", "__Secure-3PSID")
+
+    /** Déconnexion : cookies et données des pages effacés (téléphone et voiture). */
+    fun signOut(done: () -> Unit) {
+        runCatching { android.webkit.WebStorage.getInstance().deleteAllData() }
+        CookieManager.getInstance().removeAllCookies {
+            flushCookies()
+            done()
+        }
+    }
+
     // ---------- Commandes du lecteur (JavaScript sur la page YouTube) ----------
 
     const val JS_PLAY_PAUSE =
