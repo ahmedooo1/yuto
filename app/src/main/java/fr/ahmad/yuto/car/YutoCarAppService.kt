@@ -174,7 +174,8 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
             side.addAction(Action.Builder().setIcon(icon(R.drawable.ic_replay10)).setOnClickListener { renderer.seek(-10) }.build())
         }
         side.addAction(Action.Builder().setIcon(icon(R.drawable.ic_fullscreen)).setOnClickListener {
-            if (full && renderer.isLocalPlaying()) renderer.stopLocal() else renderer.setFullscreen(!full)
+            if (renderer.isMirroring()) renderer.stopMirror()
+            else if (full && renderer.isLocalPlaying()) renderer.stopLocal() else renderer.setFullscreen(!full)
         }.build())
         b.setMapActionStrip(side.build())
         if (parked) b.setPanModeListener { }
