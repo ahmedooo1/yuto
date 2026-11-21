@@ -1,4 +1,4 @@
-package fr.ahmad.parko.car
+package fr.ahmad.yuto.car
 
 import android.content.Intent
 import android.util.Log
@@ -26,23 +26,23 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import fr.ahmad.parko.ParkGuard
-import fr.ahmad.parko.ParkGuardService
-import fr.ahmad.parko.R
+import fr.ahmad.yuto.ParkGuard
+import fr.ahmad.yuto.ParkGuardService
+import fr.ahmad.yuto.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/** Parko sur l'écran de la voiture (Android Auto). */
-class ParkoCarAppService : CarAppService() {
+/** Yuto sur l'écran de la voiture (Android Auto). */
+class YutoCarAppService : CarAppService() {
 
     // Appli installée hors Play Store : on accepte tous les hôtes Android Auto
     override fun createHostValidator(): HostValidator = HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
 
     @Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
-    override fun onCreateSession(): Session = ParkoSession()
+    override fun onCreateSession(): Session = YutoSession()
 }
 
-class ParkoSession : Session() {
+class YutoSession : Session() {
     override fun onCreateScreen(intent: Intent): Screen = VideoScreen(carContext)
 }
 
@@ -168,7 +168,7 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
     private fun toast(id: Int) = runCatching { CarToast.makeText(carContext, str(id), CarToast.LENGTH_LONG).show() }
 
     private companion object {
-        const val TAG = "ParkoScreen"
+        const val TAG = "YutoScreen"
     }
 }
 

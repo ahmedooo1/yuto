@@ -1,4 +1,4 @@
-package fr.ahmad.parko.car
+package fr.ahmad.yuto.car
 
 import android.annotation.SuppressLint
 import android.app.Presentation
@@ -23,8 +23,8 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.car.app.SurfaceCallback
 import androidx.car.app.SurfaceContainer
-import fr.ahmad.parko.R
-import fr.ahmad.parko.Web
+import fr.ahmad.yuto.R
+import fr.ahmad.yuto.Web
 
 /**
  * YouTube sur l'écran Android Auto.
@@ -40,7 +40,7 @@ import fr.ahmad.parko.Web
 class VideoRenderer(private val context: Context) : SurfaceCallback {
 
     private val main = Handler(Looper.getMainLooper())
-    private val prefs = context.getSharedPreferences("parko", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("yuto", Context.MODE_PRIVATE)
 
     private var vd: VirtualDisplay? = null
     private var pres: Presentation? = null
@@ -170,7 +170,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     private fun create(s: android.view.Surface) {
         val dm = context.getSystemService(DisplayManager::class.java)
         val display = dm.createVirtualDisplay(
-            "ParkoCarVideo", width, height, dpi, s,
+            "YutoCarVideo", width, height, dpi, s,
             DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY,
         ) ?: error("createVirtualDisplay returned null")
         vd = display
@@ -298,7 +298,7 @@ class VideoRenderer(private val context: Context) : SurfaceCallback {
     }
 
     private companion object {
-        const val TAG = "ParkoVideo"
+        const val TAG = "YutoVideo"
         const val KEY_LAST = "last_url"
         const val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
     }

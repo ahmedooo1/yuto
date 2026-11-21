@@ -1,4 +1,4 @@
-package fr.ahmad.parko
+package fr.ahmad.yuto
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -22,7 +22,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
 /**
- * Lit la vitesse GPS du téléphone tant que Parko est ouvert dans la voiture,
+ * Lit la vitesse GPS du téléphone tant que Yuto est ouvert dans la voiture,
  * pour le verrou de stationnement quand la voiture ne transmet pas sa vitesse.
  */
 class ParkGuardService : Service() {
@@ -80,7 +80,7 @@ class ParkGuardService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
         return NotificationCompat.Builder(this, CHANNEL)
-            .setSmallIcon(R.drawable.ic_stat_parko)
+            .setSmallIcon(R.drawable.ic_stat_yuto)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(getString(R.string.notif_text))
             .setContentIntent(open)

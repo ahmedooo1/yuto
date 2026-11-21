@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "fr.ahmad.parko"
+    namespace = "fr.ahmad.yuto"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "fr.ahmad.parko"
+        applicationId = "fr.ahmad.yuto"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Parko</string>
+    <string name="app_name">Yuto</string>
     <string name="tagline">YouTube on your car screen. Only when you are parked.</string>
 
     <string name="status_title">Parking lock</string>
     <string name="status_ok">Ready. Location and car speed are allowed.</string>
-    <string name="status_missing">Parko needs your location to know the car is stopped. Without it, video stays hidden.</string>
+    <string name="status_missing">Yuto needs your location to know the car is stopped. Without it, video stays hidden.</string>
     <string name="allow">Allow</string>
 
     <string name="login_title">Your YouTube account</string>
@@ -15,7 +15,7 @@
 
     <string name="car_title">In the Golf</string>
     <string name="car_step1">Android Auto settings: tap the version 10 times, then the menu ⋮ and Unknown sources.</string>
-    <string name="car_step2">Plug in the phone and open Parko from the car app list.</string>
+    <string name="car_step2">Plug in the phone and open Yuto from the car app list.</string>
     <string name="car_step3">Stop the car: after 10 seconds stopped, the video appears. As soon as it moves, the picture hides and only the sound continues.</string>
 
     <string name="credit">Made by Ahmad Ahmad</string>
@@ -29,7 +29,7 @@
     <string name="lock_countdown">Video in %1$d s</string>
     <string name="lock_checking">Checking that the car is stopped</string>
     <string name="lock_checking_sub">Waiting for the car speed or GPS…</string>
-    <string name="lock_no_permission">Open Parko on the phone and allow location.</string>
+    <string name="lock_no_permission">Open Yuto on the phone and allow location.</string>
     <string name="only_parked">Search is available when the car is parked</string>
     <string name="search_hint">Search YouTube</string>
 </resources>

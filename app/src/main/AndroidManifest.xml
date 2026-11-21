@@ -22,7 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Parko"
+        android:theme="@style/Theme.Yuto"
         tools:targetApi="34">
 
         <activity
@@ -48,7 +48,7 @@
         <!-- Écran de la voiture. Catégorie NAVIGATION : c'est elle qui donne une Surface
              où l'on peut dessiner librement (déjà validé sur la Golf avec Mapo). -->
         <service
-            android:name=".car.ParkoCarAppService"
+            android:name=".car.YutoCarAppService"
             android:exported="true">
             <intent-filter>
                 <action android:name="androidx.car.app.CarAppService" />

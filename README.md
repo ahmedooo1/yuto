@@ -1,4 +1,4 @@
-# Parko
+# Yuto
 
 YouTube sur l'écran Android Auto de la voiture, **uniquement à l'arrêt**.
 
@@ -14,9 +14,9 @@ YouTube sur l'écran Android Auto de la voiture, **uniquement à l'arrêt**.
 
 ## Installation
 
-1. Télécharger `Parko.apk` depuis la dernière release et l'installer (KingInstaller).
-2. Ouvrir Parko sur le téléphone, autoriser la position.
+1. Télécharger `Yuto.apk` depuis la dernière release et l'installer (KingInstaller).
+2. Ouvrir Yuto sur le téléphone, autoriser la position.
 3. Android Auto : paramètres développeur, « Sources inconnues » activé.
-4. Dans la voiture, ouvrir Parko depuis la liste des applis.
+4. Dans la voiture, ouvrir Yuto depuis la liste des applis.
 
 Créé par Ahmad Ahmad.

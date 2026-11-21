@@ -4,7 +4,7 @@
 
     <string name="status_title">Verrou de stationnement</string>
     <string name="status_ok">Prêt. Position et vitesse de la voiture autorisées.</string>
-    <string name="status_missing">Parko a besoin de la position pour savoir que la voiture est arrêtée. Sans elle, la vidéo reste cachée.</string>
+    <string name="status_missing">Yuto a besoin de la position pour savoir que la voiture est arrêtée. Sans elle, la vidéo reste cachée.</string>
     <string name="allow">Autoriser</string>
 
     <string name="login_title">Ton compte YouTube</string>
@@ -14,7 +14,7 @@
 
     <string name="car_title">Dans la Golf</string>
     <string name="car_step1">Réglages Android Auto : touche 10 fois la version, puis le menu ⋮ et Sources inconnues.</string>
-    <string name="car_step2">Branche le téléphone et ouvre Parko dans la liste des applis de la voiture.</string>
+    <string name="car_step2">Branche le téléphone et ouvre Yuto dans la liste des applis de la voiture.</string>
     <string name="car_step3">Arrête la voiture : après 10 secondes à l\'arrêt, la vidéo apparaît. Dès qu\'elle bouge, l\'image se cache et seul le son continue.</string>
 
     <string name="credit">Créé par Ahmad Ahmad</string>
@@ -28,7 +28,7 @@
     <string name="lock_countdown">Vidéo dans %1$d s</string>
     <string name="lock_checking">Vérification de l\'arrêt de la voiture</string>
     <string name="lock_checking_sub">En attente de la vitesse de la voiture ou du GPS…</string>
-    <string name="lock_no_permission">Ouvre Parko sur le téléphone et autorise la position.</string>
+    <string name="lock_no_permission">Ouvre Yuto sur le téléphone et autorise la position.</string>
     <string name="only_parked">La recherche est disponible à l\'arrêt</string>
     <string name="search_hint">Rechercher sur YouTube</string>
 </resources>

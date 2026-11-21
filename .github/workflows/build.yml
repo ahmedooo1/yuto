@@ -30,10 +30,10 @@ jobs:
             grep -E "^e: |error:|What went wrong" -A2 build.log | head -40 | while IFS= read -r line; do
               echo "::error::$line"
             done
-            echo "::error::ALL $(grep -E '^e: ' build.log | sed -E 's#file:///[^ ]*/parko/##' | cut -c1-220 | paste -sd '|' | cut -c1-3900)"
+            echo "::error::ALL $(grep -E '^e: ' build.log | sed -E 's#file:///[^ ]*/yuto/##' | cut -c1-220 | paste -sd '|' | cut -c1-3900)"
             exit 1
           fi
-          cp app/build/outputs/apk/debug/app-debug.apk Parko.apk
+          cp app/build/outputs/apk/debug/app-debug.apk Yuto.apk
 
       - name: Parking lock tests
         run: |
@@ -46,21 +46,21 @@ jobs:
       - name: Check Android Auto manifest
         run: |
           BT=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -1)
-          MAN=$(${BT}aapt2 dump xmltree --file AndroidManifest.xml Parko.apk)
+          MAN=$(${BT}aapt2 dump xmltree --file AndroidManifest.xml Yuto.apk)
           need() { echo "$MAN" | grep -q "$1" && echo "::notice::OK $2" || { echo "::error::MISSING $2"; exit 1; }; }
           need 'androidx.car.app.category.NAVIGATION' "car category NAVIGATION"
           need 'androidx.car.app.ACCESS_SURFACE' "permission ACCESS_SURFACE"
           need 'com.google.android.gms.car.application' "Android Auto meta-data"
-          ${BT}apksigner verify --print-certs Parko.apk | grep -m1 'SHA-256' | sed 's/^/::notice::/'
+          ${BT}apksigner verify --print-certs Yuto.apk | grep -m1 'SHA-256' | sed 's/^/::notice::/'
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Parko-apk
-          path: Parko.apk
+          name: Yuto-apk
+          path: Yuto.apk
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Parko build ${{ github.run_number }}
-          files: Parko.apk
+          name: Yuto build ${{ github.run_number }}
+          files: Yuto.apk

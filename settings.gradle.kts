@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Parko"
+rootProject.name = "Yuto"
 include(":app")
