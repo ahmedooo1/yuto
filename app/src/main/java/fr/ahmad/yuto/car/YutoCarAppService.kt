@@ -105,8 +105,10 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
         }.onFailure { Log.i(TAG, "car speed not available: ${it.message}") }
     }
 
-    /** Vidéo visible ? (selon l'état et la case "verrou strict" du téléphone) */
-    private fun videoShown() = !ParkGuard.shouldLock(state, Settings.strictLock(carContext))
+    /** Vidéo visible ? (selon l'état, le verrou strict et le choix « vidéo en roulant ») */
+    private fun videoShown() = !ParkGuard.shouldLock(
+        state, Settings.strictLock(carContext), Settings.allowDriving(carContext),
+    )
     private var shownInTemplate: Boolean? = null
 
     private fun pushLock() {
@@ -114,7 +116,7 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
         val strict = Settings.strictLock(carContext)
         val wait = if (strict) ParkGuard.UNLOCK_AFTER_MS else ParkGuard.QUICK_UNLOCK_MS
         ParkGuard.unlockAfterMs = wait
-        val locked = ParkGuard.shouldLock(st, strict)
+        val locked = ParkGuard.shouldLock(st, strict, Settings.allowDriving(carContext))
         val waiting = ParkGuard.remainingMs.coerceAtMost(wait)
         val (title, sub) = when (st) {
             ParkGuard.State.PARKED -> "" to ""
@@ -174,15 +176,34 @@ class VideoScreen(carContext: CarContext) : Screen(carContext) {
         return b.build()
     }
 
-    private fun toast(id: Int) = runCatching { CarToast.makeText(carContext, str(id), CarToast.LENGTH_LONG).show() }
+    private fun toast(id: Int, vararg args: Any) =
+        runCatching { CarToast.makeText(carContext, str(id, *args), CarToast.LENGTH_LONG).show() }
 
     private companion object {
         const val TAG = "YutoScreen"
     }
 }
 
-/** Recherche YouTube avec le clavier de la voiture (Android Auto le permet à l'arrêt). */
+/**
+ * Recherche YouTube : clavier de la voiture (Android Auto le permet à l'arrêt)
+ * ou recherche vocale avec le micro du téléphone (bouton micro).
+ */
 class SearchScreen(carContext: CarContext, private val renderer: VideoRenderer) : Screen(carContext) {
+
+    private val voice = VoiceSearch(carContext) { text ->
+        toast(R.string.voice_result, text)
+        renderer.search(text)
+        screenManager.pop()
+    }
+
+    init {
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                voice.release()
+            }
+        })
+    }
+
     override fun onGetTemplate(): Template =
         SearchTemplate.Builder(object : SearchTemplate.SearchCallback {
             override fun onSearchSubmitted(searchText: String) {
@@ -191,8 +212,25 @@ class SearchScreen(carContext: CarContext, private val renderer: VideoRenderer) 
             }
         })
             .setHeaderAction(Action.BACK)
+            .setActionStrip(
+                ActionStrip.Builder()
+                    .addAction(
+                        Action.Builder()
+                            .setIcon(
+                                CarIcon.Builder(IconCompat.createWithResource(carContext, R.drawable.ic_mic))
+                                    .setTint(CarColor.DEFAULT).build()
+                            )
+                            .setOnClickListener { voice.start() }
+                            .build()
+                    )
+                    .build()
+            )
             .setSearchHint(carContext.getString(R.string.search_hint))
             .setShowKeyboardByDefault(true)
             .setItemList(ItemList.Builder().build())
             .build()
+
+    private fun toast(id: Int, vararg args: Any) = runCatching {
+        CarToast.makeText(carContext, carContext.getString(id, *args), CarToast.LENGTH_LONG).show()
+    }
 }
