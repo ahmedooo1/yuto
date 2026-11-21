@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Recherche vocale depuis l'écran de la voiture (micro du téléphone) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -46,6 +47,11 @@
             android:name=".ParkGuardService"
             android:exported="false"
             android:foregroundServiceType="location" />
+
+        <service
+            android:name=".MirrorService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
 
         <!-- Écran de la voiture. Catégorie NAVIGATION : c'est elle qui donne une Surface
              où l'on peut dessiner librement (déjà validé sur la voiture avec Mapo). -->
