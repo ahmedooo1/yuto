@@ -27,7 +27,6 @@ import android.widget.LinearLayout
 import android.widget.VideoView
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
-import fr.ahmad.yuto.AdBlock
 import fr.ahmad.yuto.LocalVideo
 import fr.ahmad.yuto.Settings
 import androidx.car.app.SurfaceCallback
